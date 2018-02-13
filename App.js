@@ -1,25 +1,39 @@
-// @flow
-
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { View } from 'react-native';
+import { TabBarBottom, TabNavigator } from 'react-navigation';
+import AllSongsScreen from './screens/AllSongsScreen'
+import SongCategoriesScreen from './screens/SongCategoriesScreen'
+import * as firebase from 'firebase';
 
-export default class App extends React.Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
-        <Text>Changes you make will automatically reload.</Text>
-        <Text>Shake your phone to open the developer menu.</Text>
-      </View>
-    );
-  }
+const { FIREBASE_CONFIG } = require('./env.json')
+
+const loadFirebase = async (config) => {  
+  firebase.initializeApp(config);
+  const rootRef = firebase.database().ref()
+  const data = await rootRef.once('value')
+  console.log(data)
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+loadFirebase(FIREBASE_CONFIG)
+
+export default TabNavigator({
+  AllSongs: {
+    screen: AllSongsScreen,
   },
+  SongCategories: {
+    screen: SongCategoriesScreen
+  },
+}, {
+  animationEnabled: true,
+  swipeEnabled: true,
+  tabBarComponent: TabBarBottom,
+  tabBarOptions: {
+    activeTintColor: '#03A9F4',
+    labelStyle: {
+      fontSize: 12,
+    },
+    tabStyle: {
+      margin: 5,    
+    }
+  }
 });
