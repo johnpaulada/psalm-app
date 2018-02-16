@@ -1,9 +1,11 @@
 // @flow
 
 import React, { Component } from 'react';
-import { FlatList, View } from 'react-native';
-import { Header, List, ListItem } from 'react-native-elements'
+import { FlatList, View, Text } from 'react-native';
+import { connect } from 'react-umw'
+import { Header, List, ListItem} from 'react-native-elements'
 import { FontAwesome } from '@expo/vector-icons'
+import Modal from "react-native-modal";
 
 class AllSongsScreen extends Component {
   static navigationOptions = {
@@ -13,30 +15,40 @@ class AllSongsScreen extends Component {
     }
   }
 
-  itemz = [
-    {name: "Song 1"},
-    {name: "Song 2"},
-  ]
+  state = {
+    modalVisible: false
+  }
 
   render() {
     return <View>
       <Header
+        backgroundColor={"#03A9F4"}
         centerComponent={{ text: 'All Songs', style: { color: '#fff' } }}
       />
       <List containerStyle={{marginTop: 0}}>
         <FlatList
-          data={this.itemz}
+          data={this.props.songs}
           keyExtractor={(item, index) => `${index}`}
           renderItem={({item, index}) =>
             <ListItem
+              onPress={() => {
+                this.props.do('SELECT_SONG', {selectedSong: this.props.songs[index]})
+                this.setState({modalVisible: true})
+              }}
               key={index}
               title={item.name}
             />
           }
         />
       </List>
+      <Text>{this.props.selectedSong && this.props.selectedSong.lyrics}</Text>
+      {/* <Modal isVisible={this.state.modalVisible}>
+        <View style={{flex: 1}}>
+          <Text>{this.props.selectedSong}</Text>
+        </View>
+      </Modal> */}
     </View>
   }
 }
 
-export default AllSongsScreen
+export default connect()(AllSongsScreen)

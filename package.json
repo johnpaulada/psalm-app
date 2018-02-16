@@ -21,11 +21,15 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "dataloader": "^1.4.0",
     "expo": "^25.0.0",
     "firebase": "^4.9.1",
     "react": "16.2.0",
     "react-native": "0.52.0",
     "react-native-elements": "^0.19.0",
-    "react-navigation": "^1.0.3"
+    "react-native-modal": "^5.0.0",
+    "react-navigation": "^1.0.3",
+    "react-umw": "^1.1.1",
+    "unlimited-machine-works": "^1.1.3"
   }
 }
