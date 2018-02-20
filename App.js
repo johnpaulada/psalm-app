@@ -1,16 +1,16 @@
 import React from 'react';
 import { AsyncStorage, View } from 'react-native';
-import { TabBarBottom, TabNavigator } from 'react-navigation';
+import { StackNavigator, TabBarBottom, TabNavigator } from 'react-navigation';
 import * as firebase from 'firebase';
 import { Provider } from 'react-umw'
 import AllSongsScreen from './screens/AllSongsScreen'
-import SongCategoriesScreen from './screens/SongCategoriesScreen'
+import SongDisplayScreen from './screens/SongDisplayScreen'
 
 const UMW = require('unlimited-machine-works')
 const DataLoader = require('dataloader')
 const { FIREBASE_CONFIG } = require('./env.json')
 
-const machine = UMW.summon({songs: [], selectedSong: null}, {
+const machine = UMW.summon({songs: [], selectedSongs: []}, {
   'START': {
     'INITIT': {
       to: 'BROWSING',
@@ -23,16 +23,23 @@ const machine = UMW.summon({songs: [], selectedSong: null}, {
     'SELECT_SONG': {
       to: 'BROWSING',
       action: (data, args) => {
-        return {...data, selectedSong: args.selectedSong}
+        return {...data, selectedSongs: [...data.selectedSongs, args.song]}
       }
     },
-    'UNSELECT_SONG': {
+    'REMOVE_SONG': {
       to: 'BROWSING',
       action: (data, args) => {
-        return {...data, selectedSong: null}
+        return {...data, selectedSongs: data.selectedSongs.filter(song => {
+          return song.name !== args.song.name
+        })}
       }
     }
   }
+})
+
+machine.addSubscriber((_, data) => {
+  // console.log("OUT SUBSCRIBER")
+  // console.log(data.selectedSong && data.selectedSong.name)
 })
 
 const appDataLoader = new DataLoader(keys => {
@@ -65,13 +72,21 @@ const loadData = async () => {
 
 loadData()
 
+const AllSongsNavigator = StackNavigator({
+  DisplaySongs: {
+    screen: AllSongsScreen
+  },
+  AllSongsSongDisplay: {
+    screen: SongDisplayScreen
+  }
+}, {
+  headerMode: 'none'
+})
+
 const Navigator = TabNavigator({
   AllSongs: {
-    screen: AllSongsScreen,
-  },
-  SongCategories: {
-    screen: SongCategoriesScreen
-  },
+    screen: AllSongsNavigator,
+  }
 }, {
   animationEnabled: true,
   swipeEnabled: true,

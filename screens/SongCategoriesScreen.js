@@ -1,5 +1,3 @@
-// @flow
-
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { Header } from 'react-native-elements'

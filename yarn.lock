@@ -5276,8 +5276,8 @@ react-transform-hmr@^1.0.4:
     react-proxy "^1.1.7"
 
 react-umw@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/react-umw/-/react-umw-1.1.1.tgz#23cefd1527b4b7577da1e19bb1c21a16649f2d32"
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/react-umw/-/react-umw-1.2.2.tgz#69252437d86a15196a6f50c39214221eb6740878"
 
 react@16.2.0, react@^16.0.0:
   version "16.2.0"
