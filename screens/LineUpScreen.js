@@ -4,7 +4,7 @@ import { connect } from 'react-umw'
 import { Header, List, ListItem} from 'react-native-elements'
 import { FontAwesome } from '@expo/vector-icons'
 
-class AllSongsScreen extends Component {
+class LineUpScreen extends Component {
   constructor(props) {
     super(props)
     this.props.subscribe(this)
@@ -14,22 +14,22 @@ class AllSongsScreen extends Component {
     return <View>
       <Header
         backgroundColor={"#03A9F4"}
-        centerComponent={{ text: 'All Songs', style: { color: '#fff' } }}
+        centerComponent={{ text: 'Line Up', style: { color: '#fff' } }}
       />
       {this.props.fontsLoaded
         ? <FlatList
-            data={this.props.songs.filter(s => !(s.name in this.props.selectedSongs))}
+            data={Object.entries(this.props.selectedSongs)}
             keyExtractor={(item, index) => `${index}`}
             renderItem={({item, index}) =>
               <ListItem
                 onPress={() => {
-                  this.props.navigation.navigate('AllSongsSongDisplay', {
-                    song: item,
-                    from: 'AllSongs'
+                  this.props.navigation.navigate('LineUpSongDisplay', {
+                    song: item[1],
+                    from: 'LineUp'
                   })
                 }}
                 key={index}
-                title={item.name}
+                title={item[1].name}
               />
             }
           />
@@ -38,13 +38,13 @@ class AllSongsScreen extends Component {
   }
 }
 
-const AllSongs = connect()(AllSongsScreen)
+const LineUp = connect()(LineUpScreen)
 
-AllSongs.navigationOptions = {
-  title: 'All Songs',
+LineUp.navigationOptions = {
+  title: 'Line Up',
   tabBarIcon: ({tintColor}) => {
     return <FontAwesome name="list" size={18} color={tintColor} />
   }
 }
 
-export default AllSongs
+export default LineUp

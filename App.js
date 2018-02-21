@@ -5,12 +5,14 @@ import * as firebase from 'firebase';
 import { Provider } from 'react-umw'
 import AllSongsScreen from './screens/AllSongsScreen'
 import SongDisplayScreen from './screens/SongDisplayScreen'
+import LineUpScreen from './screens/LineUpScreen'
+import { Font } from 'expo'
 
 const UMW = require('unlimited-machine-works')
 const DataLoader = require('dataloader')
 const { FIREBASE_CONFIG } = require('./env.json')
 
-const machine = UMW.summon({songs: [], selectedSongs: []}, {
+const machine = UMW.summon({songs: [], selectedSongs: {}, fontsLoaded: false}, {
   'START': {
     'INITIT': {
       to: 'BROWSING',
@@ -23,15 +25,20 @@ const machine = UMW.summon({songs: [], selectedSongs: []}, {
     'SELECT_SONG': {
       to: 'BROWSING',
       action: (data, args) => {
-        return {...data, selectedSongs: [...data.selectedSongs, args.song]}
+        return {...data, selectedSongs: {...data.selectedSongs, [args.song.name]: args.song}}
       }
     },
     'REMOVE_SONG': {
       to: 'BROWSING',
       action: (data, args) => {
-        return {...data, selectedSongs: data.selectedSongs.filter(song => {
-          return song.name !== args.song.name
-        })}
+        delete data.selectedSongs[args.song.name]
+        return {...data, selectedSongs: {...data.selectedSongs}}
+      }
+    },
+    'LOAD_FONTS': {
+      to: 'BROWSING',
+      action: (data, args) => {
+        return {...data, fontsLoaded: true}
       }
     }
   }
@@ -41,6 +48,16 @@ machine.addSubscriber((_, data) => {
   // console.log("OUT SUBSCRIBER")
   // console.log(data.selectedSong && data.selectedSong.name)
 })
+
+loadFonts = async () => {
+  await Font.loadAsync({
+    'noto-sans': require('./assets/fonts/NotoSans-Regular.ttf'),
+    'chewy': require('./assets/fonts/Chewy-Regular.ttf'),
+    'signato': require('./assets/fonts/Signato-Regular.otf'),
+  });
+
+  machine.do('LOAD_FONTS')
+}
 
 const appDataLoader = new DataLoader(keys => {
   return new Promise(async (resolve, reject) => {
@@ -68,6 +85,7 @@ const appDataLoader = new DataLoader(keys => {
 const loadData = async () => {
   const songs = await appDataLoader.load('songs')
   machine.do('INITIT', {songs})
+  loadFonts()
 }
 
 loadData()
@@ -83,9 +101,24 @@ const AllSongsNavigator = StackNavigator({
   headerMode: 'none'
 })
 
+const LineUpNavigator = StackNavigator({
+  DisplayLineUp: {
+    screen: LineUpScreen
+  },
+  LineUpSongDisplay: {
+    screen: SongDisplayScreen
+  }
+}, {
+  headerMode: 'none'
+})
+
+
 const Navigator = TabNavigator({
   AllSongs: {
     screen: AllSongsNavigator,
+  },
+  LineUp: {
+    screen: LineUpNavigator
   }
 }, {
   animationEnabled: true,
