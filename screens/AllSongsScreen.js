@@ -4,6 +4,7 @@ import { connect } from 'react-umw'
 import { Header, List, ListItem} from 'react-native-elements'
 import { FontAwesome } from '@expo/vector-icons'
 import SongButton from '../components/SongButton'
+import EmptyList from '../components/EmptyList'
 
 const BG_IMAGE = require('../assets/images/bg.png')
 
@@ -21,14 +22,13 @@ class AllSongsScreen extends Component {
   }
 
   render() {
-    return <View>
-      {/* <Header
-        backgroundColor={"#03A9F4"}
-        centerComponent={{ text: 'All Songs', style: { color: '#fff' } }}
-      /> */}
-      {this.props.fontsLoaded
+    const filteredSongs = this.props.songs.filter(s => !(s.name in this.props.selectedSongs))
+    const noSongs = filteredSongs.length === 0
+
+    return <View style={{backgroundColor: '#222'}}>
+      {this.props.fontsLoaded && !noSongs
         ? <FlatList
-            data={this.props.songs.filter(s => !(s.name in this.props.selectedSongs))}
+            data={filteredSongs}
             keyExtractor={(item, index) => `song-${index}`}
             renderItem={({item, index}) =>
               <SongButton
@@ -37,7 +37,7 @@ class AllSongsScreen extends Component {
                 onPress={this.selectSong(item)} />
             }
           />
-        : null}
+        : <EmptyList fontsLoaded={this.props.fontsLoaded} />}
     </View>
   }
 }

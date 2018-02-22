@@ -4,6 +4,7 @@ import { connect } from 'react-umw'
 import { Header, List, ListItem} from 'react-native-elements'
 import { FontAwesome } from '@expo/vector-icons'
 import SongButton from '../components/SongButton'
+import EmptyList from '../components/EmptyList'
 
 const BG_IMAGE = require('../assets/images/bg.png')
 
@@ -24,8 +25,8 @@ class LineUpScreen extends Component {
     const selectedSongs = Object.entries(this.props.selectedSongs)
     const noSelectedSongs = selectedSongs.length === 0
 
-    return <View>
-      {this.props.fontsLoaded || noSelectedSongs
+    return <View style={{backgroundColor: '#222'}}>
+      {this.props.fontsLoaded && !noSelectedSongs
         ? <FlatList
             data={selectedSongs}
             keyExtractor={(item, index) => `line-${index}`}
@@ -36,7 +37,7 @@ class LineUpScreen extends Component {
                 onPress={this.onSelect(item[1])} />
             }
           />
-        : null}
+        : <EmptyList fontsLoaded={this.props.fontsLoaded} />}
     </View>
   }
 }
