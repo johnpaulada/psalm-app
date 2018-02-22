@@ -52,16 +52,18 @@ class SongDisplayScreen extends Component {
       <Header
         backgroundColor={"#03A9F4"}
         leftComponent={{ icon: 'arrow-back', color: '#fff', onPress: this.back }}
-        centerComponent={{ text: song.name, style: { color: '#fff' } }}
+        centerComponent={{ text: song.name, style: { color: '#fff', fontFamily: 'signato', fontSize: 24 } }}
         rightComponent={{ icon: 'menu', color: '#fff', onPress: this.displayOptions }}
       />
       <ScrollView contentContainerStyle={styles.scroll}>   
         { 
           this.props.fontsLoaded
             ? song.lyrics.split("\n").map((line, index) =>
-              <Text key={`line-${index}`} style={styles.lyrics}>
-                {line}
-              </Text>)
+              <View key={`para-${index}`} style={styles.lyricsContainer}>
+                <Text key={`line-${index}`} style={styles.lyrics}>
+                  {line}
+                </Text>
+              </View>)
             : null
         }
       </ScrollView> 
@@ -75,8 +77,14 @@ const styles = StyleSheet.create({
   },
   lyrics: {
     fontFamily: 'noto-sans',
-    fontSize: 16,
+    fontSize: 14,
     lineHeight: 20
+  },
+  lyricsContainer: {
+    marginBottom: 10,
+    backgroundColor: '#FAFAFA',
+    borderRadius: 10,
+    padding: 20
   }
 })
 

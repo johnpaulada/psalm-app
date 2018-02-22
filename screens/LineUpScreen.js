@@ -3,6 +3,9 @@ import { FlatList, ScrollView, View, Text } from 'react-native';
 import { connect } from 'react-umw'
 import { Header, List, ListItem} from 'react-native-elements'
 import { FontAwesome } from '@expo/vector-icons'
+import SongButton from '../components/SongButton'
+
+const BG_IMAGE = require('../assets/images/bg.png')
 
 class LineUpScreen extends Component {
   constructor(props) {
@@ -10,27 +13,27 @@ class LineUpScreen extends Component {
     this.props.subscribe(this)
   }
 
+  onSelect = item => () => {
+    this.props.navigation.navigate('LineUpSongDisplay', {
+      song: item,
+      from: 'LineUp'
+    })
+  }
+
   render() {
+    const selectedSongs = Object.entries(this.props.selectedSongs)
+    const noSelectedSongs = selectedSongs.length === 0
+
     return <View>
-      <Header
-        backgroundColor={"#03A9F4"}
-        centerComponent={{ text: 'Line Up', style: { color: '#fff' } }}
-      />
-      {this.props.fontsLoaded
+      {this.props.fontsLoaded || noSelectedSongs
         ? <FlatList
-            data={Object.entries(this.props.selectedSongs)}
-            keyExtractor={(item, index) => `${index}`}
+            data={selectedSongs}
+            keyExtractor={(item, index) => `line-${index}`}
             renderItem={({item, index}) =>
-              <ListItem
-                onPress={() => {
-                  this.props.navigation.navigate('LineUpSongDisplay', {
-                    song: item[1],
-                    from: 'LineUp'
-                  })
-                }}
-                key={index}
-                title={item[1].name}
-              />
+              <SongButton
+                item={item[1]}
+                image={BG_IMAGE}
+                onPress={this.onSelect(item[1])} />
             }
           />
         : null}
