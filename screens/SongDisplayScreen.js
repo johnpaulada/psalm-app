@@ -12,11 +12,6 @@ import { Header, List, ListItem} from 'react-native-elements'
 import { FontAwesome } from '@expo/vector-icons'
 
 class SongDisplayScreen extends Component {
-  constructor(props) {
-    super(props)
-    this.props.subscribe(this)
-  }
-
   back = () => this.props.navigation.goBack()
 
   displayOptions = () => {
@@ -35,9 +30,9 @@ class SongDisplayScreen extends Component {
     (buttonIndex) => {
       if (buttonIndex === 1) {
         if (from === 'AllSongs') {
-          this.props.do('SELECT_SONG', {song})
+          this.props.machine.do('SELECT_SONG', {song})
         } else if (from === 'LineUp') {
-          this.props.do('REMOVE_SONG', {song})
+          this.props.machine.do('REMOVE_SONG', {song})
         }
         
         this.back()

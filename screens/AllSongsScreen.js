@@ -9,11 +9,6 @@ import EmptyList from '../components/EmptyList'
 const BG_IMAGE = require('../assets/images/bg.png')
 
 class AllSongsScreen extends Component {
-  constructor(props) {
-    super(props)
-    this.props.subscribe(this)
-  }
-
   selectSong = item => () => {
     this.props.navigation.navigate('AllSongsSongDisplay', {
       song: item,
@@ -25,7 +20,7 @@ class AllSongsScreen extends Component {
     const filteredSongs = this.props.songs.filter(s => !(s.name in this.props.selectedSongs))
     const noSongs = filteredSongs.length === 0
 
-    return <View style={{backgroundColor: '#222'}}>
+    return <View style={{flex: 1, backgroundColor: '#222'}}>
       {this.props.fontsLoaded && !noSongs
         ? <FlatList
             data={filteredSongs}
